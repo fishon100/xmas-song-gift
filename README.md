@@ -1,10 +1,10 @@
-# 🎄 聖誕猜歌送禮
+# 🎆 跨年猜歌交換禮物
 
 網頁放在 GitHub Pages，資料存在 Firebase Firestore（免費方案就夠用）。玩家不需要登入，打開網址、填名字就能玩。
 
 ## 一、建立 Firebase 資料庫（約 5 分鐘）
 
-1. 用 Google 帳號登入 https://console.firebase.google.com ，按「建立專案」。名稱隨意（例如 `xmas-song-gift`），Google Analytics 可以關掉。
+1. 用 Google 帳號登入 https://console.firebase.google.com ，按「建立專案」。名稱隨意（例如 `newyear-song-gift`），Google Analytics 可以關掉。
 2. 左側選單「建構 → Firestore Database」→「建立資料庫」。
    - 位置選 `asia-east1`（台灣）。
    - 模式選「以正式版模式啟動」。

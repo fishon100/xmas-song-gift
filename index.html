@@ -3,22 +3,22 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>聖誕猜歌送禮</title>
+<title>跨年猜歌交換禮物</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=Noto+Serif+TC:wght@700;900&display=swap" rel="stylesheet">
 <style>
   :root{
-    --bg:#f6efe2; --paper:#fffaf1; --ink:#1f2a23; --muted:#6b7068; --line:#e4d9c4;
-    --green:#1f5c3d; --green-2:#2f7a53; --red:#b3322a; --red-2:#d14a3f; --gold:#c49a3a;
+    --bg:#f4f1ea; --paper:#fffdf8; --ink:#1b2033; --muted:#686c7a; --line:#e3dccb;
+    --green:#1f2a55; --green-2:#33437d; --red:#c2412d; --red-2:#d85a44; --gold:#c9a24a;
     --radius:16px;
   }
   *{box-sizing:border-box}
   html,body{margin:0}
   body{
     font-family:"Noto Sans TC",system-ui,sans-serif; color:var(--ink); background:var(--bg);
-    background-image:radial-gradient(circle at 12% 8%,rgba(179,50,42,.07) 0 140px,transparent 141px),
-                     radial-gradient(circle at 92% 30%,rgba(31,92,61,.07) 0 180px,transparent 181px);
+    background-image:radial-gradient(circle at 12% 8%,rgba(201,162,74,.16) 0 140px,transparent 141px),
+                     radial-gradient(circle at 92% 30%,rgba(31,42,85,.08) 0 180px,transparent 181px);
     min-height:100vh; line-height:1.6;
   }
   header{max-width:640px;margin:0 auto;padding:28px 18px 8px;display:flex;align-items:flex-end;justify-content:space-between;gap:12px;flex-wrap:wrap}
@@ -28,7 +28,7 @@
   .tag{display:inline-block;font-size:12px;font-weight:700;border-radius:999px;padding:1px 8px;margin-left:6px;background:var(--red);color:#fff}
   main{max-width:640px;margin:0 auto;padding:8px 18px 60px}
   .card{background:var(--paper);border:1px solid var(--line);border-radius:var(--radius);padding:20px;margin:14px 0;box-shadow:0 1px 0 rgba(0,0,0,.03)}
-  .card.host{border:2px solid var(--green);background:#f3f8f4}
+  .card.host{border:2px solid var(--green);background:#f1f3fa}
   .card.center{text-align:center}
   h2{font-size:20px;margin:0 0 6px;font-weight:900}
   h3{font-size:16px;margin:0 0 6px}
@@ -52,7 +52,7 @@
   .row{display:flex;flex-wrap:wrap;gap:0}
   .chips{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}
   .chip{font-size:13px;background:#fff;border:1px solid var(--line);border-radius:999px;padding:2px 10px}
-  .chip.done{background:#e6f1ea;border-color:#bcd8c6;color:var(--green)}
+  .chip.done{background:#e8ebf6;border-color:#c3cae6;color:var(--green)}
   .bar{height:10px;background:#efe6d4;border-radius:99px;overflow:hidden;margin:10px 0}
   .bar>i{display:block;height:100%;background:linear-gradient(90deg,var(--green),var(--green-2));border-radius:99px;transition:width .4s}
   .song{background:#fff;border:1px dashed var(--gold);border-radius:14px;padding:14px 16px;margin:10px 0}
@@ -68,7 +68,7 @@
   .cdl{font-size:22px;font-weight:900;letter-spacing:.1em}
   .opts{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:8px;margin:12px 0}
   .opt{border:2px solid var(--line);background:#fff;border-radius:12px;padding:12px;font:inherit;font-weight:700;cursor:pointer}
-  .opt.on{border-color:var(--green);background:#e6f1ea;color:var(--green)}
+  .opt.on{border-color:var(--green);background:#e8ebf6;color:var(--green)}
   table{width:100%;border-collapse:collapse}
   td{padding:8px 4px;border-bottom:1px solid var(--line)}
   td.n{text-align:right;font-weight:900;font-variant-numeric:tabular-nums}
@@ -101,7 +101,7 @@
 </head>
 <body>
 <header>
-  <h1><small>CHRISTMAS SONG GIFT EXCHANGE</small>🎄 聖誕猜歌送禮</h1>
+  <h1><small>NEW YEAR'S EVE SONG GIFT EXCHANGE</small>🎆 跨年猜歌交換禮物</h1>
   <div id="me"></div>
 </header>
 <main id="app"><div class="card center">載入中…</div></main>
@@ -338,7 +338,7 @@ async function wipe(all){
   }
 }
 const BOT_SONGS = [
-  ['Last Christmas','Wham!'], ['All I Want for Christmas Is You','Mariah Carey'], ['Jingle Bell Rock','Bobby Helms'],
+  ['Happy New Year','ABBA'], ['新年快樂','S.H.E'], ['Firework','Katy Perry'],
   ['小幸運','田馥甄'], ['晴天','周杰倫'], ['倔強','五月天'], ['Shape of You','Ed Sheeran'], ['好想你','四葉草'],
 ];
 function confirmBox(text, ok){ S.modal = {text, ok}; renderModal(); }
@@ -433,7 +433,7 @@ function giftNote(){
 
 function drawnView(d){
   if (S.drawing) return `<section class="card center"><h2>抽歌中…</h2><div class="draw-anim"><span>?</span><span>?</span><span>?</span></div></section>`;
-  if (!d.me.revealed) return `<section class="card center"><h2>🎄 歌曲分配完成！</h2>
+  if (!d.me.revealed) return `<section class="card center"><h2>🎆 歌曲分配完成！</h2>
       <p>按下按鈕抽出你的歌。抽到的歌只有你自己看得到。</p>
       <button class="btn red big" data-act="draw" ${dis()}>抽歌</button></section>`;
   return `<section class="card"><div class="lead">YOUR SONG</div><h2>你抽到的歌</h2>
@@ -447,7 +447,7 @@ function liveView(d){
   const round = (st.done||[]).length + (p ? 1 : 0);
   let h = `<section class="card"><div class="lead">ROUND ${Math.max(round,1)} / ${d.pids.length}</div>`;
   if (st.step === 'pick' || !p){
-    h += `<div class="stage"><div class="big">🎅</div><p>等待主持人選擇下一位上台的人…</p></div>`;
+    h += `<div class="stage"><div class="big">🥂</div><p>等待主持人選擇下一位上台的人…</p></div>`;
   } else if (st.step === 'gifts'){
     h += `<div class="stage"><p>本輪上台</p><div class="who">${esc(nm(p))}</div><p>🎁 亮出兩份禮物</p></div>`;
     if (isP) h += `<div class="note">輪到你了！先亮出兩份禮物，<b>不要說歌名</b>。等一下要播前 3 秒，現在先把歌打開準備好。</div>${songCard(S.songs[d.map[S.uid]])}`;
