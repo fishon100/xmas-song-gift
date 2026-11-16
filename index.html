@@ -207,11 +207,13 @@ const FORM = {
     const d = D();
     const name = f.querySelector('#j_name').value.trim();
     const wantHost = f.querySelector('#j_host')?.checked;
+    const pin = f.querySelector('#j_pin').value.trim();
     if (!name) return toast('請輸入名字');
+    if (!/^\d{4}$/.test(pin)) return toast('找回密碼請設 4 位數字');
     if (d.pids.some(id => S.players[id].name === name)) return toast('這個名字已經有人用了，換一個吧');
     if (d.pids.length >= d.N) return toast('人數已滿');
     if (d.phase !== 'collect') return toast('活動已經開始，無法加入');
-    await doc('players/'+S.uid).set({name, joinedAt:Date.now(), revealed:false});
+    await doc('players/'+S.uid).set({name, joinedAt:Date.now(), revealed:false, pinHash: await pinHash(pin)});
     if (wantHost) await claimHost();
   }),
   song: f => run(async()=>{
@@ -227,6 +229,13 @@ const FORM = {
     await doc('songs/'+S.uid).set({title, artist, link, at:Date.now()});
     S.editing = false;
   }),
+  recover: f => run(async()=>{
+    const name = f.querySelector('#r_name').value.trim();
+    const pin = f.querySelector('#r_pin').value.trim();
+    const id = Object.keys(S.players).find(k => S.players[k].name === name && !S.players[k].bot);
+    if (!id || !S.players[id].pinHash || S.players[id].pinHash !== await pinHash(pin)) return toast('名字或密碼不對，請再確認');
+    setUid(id); S.recover = false; toast('歡迎回來，' + name + '！');
+  }),
   setN: f => run(async()=>{
     const d = D(); const n = parseInt(f.querySelector('#h_n').value,10);
     if (!(n>=3 && n<=30)) return toast('人數請填 3～30');
@@ -239,6 +248,8 @@ const FORM = {
 const ACT = {
   claimHost: () => run(claimHost),
   edit: () => { S.editing = true; render(); },
+  showRecover: () => { S.recover = true; render(); },
+  hideRecover: () => { S.recover = false; render(); },
   cancelEdit: () => { S.editing = false; render(); },
   draw: () => {
     S.drawing = true; render();
@@ -360,17 +371,31 @@ function countdown(startAt){
   return {l:'停！', n:'⏹', c:'stop'};
 }
 
+function recoverView(){
+  return `<section class="card"><h2>🔑 找回我的身分</h2>
+    <p class="muted">換了手機、瀏覽器，或清除過瀏覽資料時，輸入加入時填的名字和 4 位數找回密碼。</p>
+    <form data-form="recover">
+      <label>名字<input id="r_name" maxlength="12" autocomplete="off"></label>
+      <label>找回密碼<input id="r_pin" inputmode="numeric" maxlength="4" autocomplete="off" placeholder="4 位數字"></label>
+      <button class="btn primary" ${dis()}>找回身分</button>
+      <button type="button" class="btn ghost" data-act="hideRecover">返回</button>
+    </form></section>`;
+}
+const recoverLink = () => `<p class="small" style="margin-top:12px"><button class="btn ghost" style="margin:0" data-act="showRecover">已經加入過？換裝置找回身分 →</button></p>`;
 function joinView(d){
-  if (d.phase !== 'collect') return `<section class="card center"><h2>活動已經開始</h2><p class="muted">目前無法加入。</p></section>`;
-  if (d.pids.length >= d.N) return `<section class="card center"><h2>人數已滿</h2><p class="muted">${d.N} 位玩家都到齊了。</p></section>`;
+  if (S.recover) return recoverView();
+  if (d.phase !== 'collect') return `<section class="card center"><h2>活動已經開始</h2><p class="muted">目前無法加入新玩家。</p>${recoverLink()}</section>`;
+  if (d.pids.length >= d.N) return `<section class="card center"><h2>人數已滿</h2><p class="muted">${d.N} 位玩家都到齊了。</p>${recoverLink()}</section>`;
   return `<section class="card"><h2>加入遊戲</h2>
     <p class="muted">先填你的名字，其他玩家會看到這個名字。</p>
     <form data-form="join">
       <label>你的名字<input id="j_name" maxlength="12" placeholder="例如：小明" autocomplete="off"></label>
+      <label>找回密碼（4 位數字）<input id="j_pin" inputmode="numeric" maxlength="4" placeholder="例如：1225" autocomplete="off"></label>
+      <p class="small muted" style="margin:2px 0 0">換手機或清除瀏覽資料時，用名字＋這組密碼找回身分。請記下來！</p>
       ${!S.config?.hostUid || !S.players[S.config.hostUid] ? `<label class="check"><input type="checkbox" id="j_host"> 我是主持人</label>` : ''}
       <button class="btn primary" ${dis()}>加入</button>
     </form>
-    <p class="muted small">已加入 ${d.pids.length}/${d.N} 人</p></section>`;
+    <p class="muted small">已加入 ${d.pids.length}/${d.N} 人</p>${recoverLink()}</section>`;
 }
 
 function collectView(d){
@@ -581,9 +606,14 @@ function renderToast(){ document.getElementById('toast').textContent = S.toast; 
 setInterval(()=>{ if (S.state?.step === 'play' && S.state?.phase==='live') render(); }, 200);
 
 /* ---------- boot ---------- */
+const UID_KEY = 'xmas_uid_' + GAME_ID + '_' + (new URLSearchParams(location.search).get('u') || 'main');
+function setUid(id){ S.uid = id; try { localStorage.setItem(UID_KEY, id); } catch(_){} }
+async function pinHash(pin){
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(GAME_ID + ':' + pin));
+  return [...new Uint8Array(buf)].map(b=>b.toString(16).padStart(2,'0')).join('');
+}
 function getUid(){
-  const slot = new URLSearchParams(location.search).get('u') || 'main';
-  const key = 'xmas_uid_' + GAME_ID + '_' + slot;
+  const key = UID_KEY;
   const mk = () => (crypto.randomUUID ? crypto.randomUUID() : Date.now().toString(36)+Math.random().toString(36).slice(2)).replace(/-/g,'');
   try { let v = localStorage.getItem(key); if (!v){ v = mk(); localStorage.setItem(key, v); } return v; }
   catch(_){ return mk(); }
