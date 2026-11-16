@@ -10,4 +10,4 @@ export const FIREBASE_CONFIG = {
 };
 
 // 遊戲代號：換一個代號就等於開一場全新的遊戲（舊資料不會被刪，只是不再讀取）
-export const GAME_ID = "xmas2026";
+export const GAME_ID = "xmas2026-v2";
