@@ -75,7 +75,18 @@
   tr.top td{color:var(--red);font-weight:900}
   details{margin-top:14px}
   summary{cursor:pointer;font-weight:700}
-  .rules li{margin:4px 0}
+  .steps{list-style:none;padding:0;margin:14px 0 0}
+  .step{display:flex;gap:14px;padding:14px 0;border-top:1px dashed var(--line)}
+  .step:first-child{border-top:0}
+  .step .badge{flex:none;align-self:flex-start;font-size:11px;font-weight:900;letter-spacing:.08em;color:#fff;background:var(--green);border-radius:8px;padding:4px 8px;margin-top:2px}
+  .step h4{margin:0 0 2px;font-size:16px}
+  .step p{margin:2px 0;font-size:14px}
+  .gifts{display:flex;gap:8px;margin:8px 0}
+  .gift{flex:1;border-radius:12px;padding:10px 12px;display:flex;flex-direction:column;font-size:14px}
+  .gift.black{background:#24262a;color:#fff}
+  .gift.white{background:#fff;border:1px solid var(--line)}
+  .gift span{font-size:12px;opacity:.75}
+  .ban{background:#fdecea;border-radius:10px;padding:8px 12px;margin-top:8px;font-size:13px;color:#7a2a24}
   .draw-anim{display:flex;justify-content:center;gap:10px;margin:18px 0}
   .draw-anim span{width:58px;height:82px;border-radius:10px;background:var(--red);color:#fff;display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:900;animation:bob .5s ease-in-out infinite alternate}
   .draw-anim span:nth-child(2){background:var(--green);animation-delay:.15s}
@@ -390,9 +401,9 @@ function collectView(d){
 
 function giftNote(){
   return `<div class="note">
-    根據這首歌準備<b>兩份禮物</b>：🤪 一份搞笑、🎁 一份認真。兩份都要跟歌有關（歌名、歌詞、MV、歌手、意境、諧音都可以）。<br>
-    包裝上標明「搞笑」或「認真」，不要寫歌名。抽到哪首歌請保密！<br>
-    🚫 不能送：馬克杯、保溫瓶、相框；明信片只能當賀卡，不能當禮物本體。</div>`;
+    根據這首歌準備<b>兩份禮物</b>：🖤 黑禮（搞笑）、🤍 白禮（認真），價格不限。兩份都要跟歌有關，歌名、歌詞、MV、歌手、意境、諧音都可以。<br>
+    包裝上標明「黑禮」或「白禮」，不要寫歌名。抽到哪首歌請保密！<br>
+    🚫 禁止送：馬克杯、保溫瓶、相框。明信片只能當賀卡附上，不能當禮物本體。</div>`;
 }
 
 function drawnView(d){
@@ -518,15 +529,17 @@ function hostView(d){
   return h;
 }
 
-function rulesView(){
-  return `<section class="card"><details><summary>📜 活動規則</summary><ol class="rules">
-    <li><b>出歌：</b>每人匿名出一首歌（歌名＋歌手＋連結）。</li>
-    <li><b>抽歌：</b>所有人出完後，系統一次分配，不會抽到自己的歌。抽到哪首歌請保密。</li>
-    <li><b>準備禮物：</b>根據抽到的歌準備兩份禮物，🤪 一份搞笑、🎁 一份認真，價格不限。包裝標明「搞笑」或「認真」，不寫歌名。</li>
-    <li><b>禁止送：</b>馬克杯、保溫瓶、相框；明信片只能當賀卡，不能當禮物本體。</li>
-    <li><b>活動當天每輪：</b>上台的人亮出兩份禮物 → 只播前 3 秒，全場搶答歌名，第一個答對 <b>+1 分</b> → 公布歌名、說明關聯 → 全場投票猜出歌人，猜對各 <b>+2 分</b> → 出歌人上台領走兩份禮物。</li>
-    <li><b>搶答限制：</b>猜歌名時，出歌人和上台的人不能答；猜出歌人時，出歌人不能投票。</li>
-    <li><b>頒獎：</b>總分最高的人得到小獎品，同分猜拳。</li>
+function rulesView(open){
+  const step = (n, t, body) => `<li class="step"><div class="badge">STEP ${n}</div><div><h4>${t}</h4>${body}</div></li>`;
+  return `<section class="card"><details ${open?'open':''}><summary>📜 活動規則</summary><ol class="steps">
+    ${step(1,'出歌','<p>每人匿名出一首歌，填寫歌名、歌手和歌曲連結。</p>')}
+    ${step(2,'抽歌','<p>所有人都出完歌後，系統會一次分配，保證不會抽到自己出的歌。</p><p>抽到哪首歌請保密，不要透露給任何人。</p>')}
+    ${step(3,'準備禮物',`<p>根據抽到的歌準備兩份禮物，價格不限：</p>
+      <div class="gifts"><div class="gift black"><b>🖤 黑禮</b><span>搞笑款</span></div><div class="gift white"><b>🤍 白禮</b><span>認真款</span></div></div>
+      <p>包裝上標明「黑禮」或「白禮」，不要寫歌名。</p>
+      <div class="ban">🚫 <b>禁止送</b>：馬克杯、保溫瓶、相框。<br>明信片只能當賀卡附上，不能當禮物本體。</div>`)}
+    ${step(4,'活動當天','<p>每人輪流上台亮出禮物，由主持人帶大家進行送禮環節和計分賽。</p>')}
+    ${step(5,'頒獎','<p>計分賽總分最高的人，額外獲得<b>「最佳歌曲連結獎」</b>。同分猜拳決定。</p>')}
   </ol></details></section>`;
 }
 
@@ -541,7 +554,7 @@ function view(){
     if (d.isHost) h += hostView(d);
     h += d.phase==='collect' ? collectView(d) : d.phase==='drawn' ? drawnView(d) : d.phase==='live' ? liveView(d) : doneView(d);
   }
-  return h + rulesView();
+  return h + rulesView(!d.me);
 }
 
 /* ---------- render ---------- */
