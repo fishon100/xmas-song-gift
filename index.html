@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>聖誕猜歌送禮</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=Noto+Serif+TC:wght@700;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#f6efe2; --paper:#fffaf1; --ink:#1f2a23; --muted:#6b7068; --line:#e4d9c4;
+    --green:#1f5c3d; --green-2:#2f7a53; --red:#b3322a; --red-2:#d14a3f; --gold:#c49a3a;
+    --radius:16px;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  body{
+    font-family:"Noto Sans TC",system-ui,sans-serif; color:var(--ink); background:var(--bg);
+    background-image:radial-gradient(circle at 12% 8%,rgba(179,50,42,.07) 0 140px,transparent 141px),
+                     radial-gradient(circle at 92% 30%,rgba(31,92,61,.07) 0 180px,transparent 181px);
+    min-height:100vh; line-height:1.6;
+  }
+  header{max-width:640px;margin:0 auto;padding:28px 18px 8px;display:flex;align-items:flex-end;justify-content:space-between;gap:12px;flex-wrap:wrap}
+  h1{font-family:"Noto Serif TC",serif;font-weight:900;font-size:28px;margin:0;letter-spacing:.02em;color:var(--green)}
+  h1 small{display:block;font-family:"Noto Sans TC";font-size:13px;font-weight:500;color:var(--muted);letter-spacing:.08em}
+  .me{font-size:14px;background:var(--paper);border:1px solid var(--line);border-radius:999px;padding:4px 12px}
+  .tag{display:inline-block;font-size:12px;font-weight:700;border-radius:999px;padding:1px 8px;margin-left:6px;background:var(--red);color:#fff}
+  main{max-width:640px;margin:0 auto;padding:8px 18px 60px}
+  .card{background:var(--paper);border:1px solid var(--line);border-radius:var(--radius);padding:20px;margin:14px 0;box-shadow:0 1px 0 rgba(0,0,0,.03)}
+  .card.host{border:2px solid var(--green);background:#f3f8f4}
+  .card.center{text-align:center}
+  h2{font-size:20px;margin:0 0 6px;font-weight:900}
+  h3{font-size:16px;margin:0 0 6px}
+  p{margin:6px 0}
+  .muted{color:var(--muted)} .small{font-size:13px}
+  label{display:block;font-weight:500;margin:12px 0 4px}
+  input[type=text],input[type=url],input[type=number],input:not([type]){
+    width:100%;font:inherit;padding:11px 12px;border:1px solid var(--line);border-radius:10px;background:#fff;margin-top:4px
+  }
+  input:focus{outline:2px solid var(--green-2);border-color:transparent}
+  label.check{display:flex;gap:8px;align-items:center;font-weight:500}
+  .btn{font:inherit;font-weight:700;border:1px solid var(--line);background:#fff;color:var(--ink);border-radius:12px;padding:10px 16px;cursor:pointer;margin:10px 8px 0 0}
+  .btn:hover{border-color:var(--green-2)}
+  .btn.primary{background:var(--green);border-color:var(--green);color:#fff}
+  .btn.primary:hover{background:var(--green-2)}
+  .btn.red{background:var(--red);border-color:var(--red);color:#fff}
+  .btn.ghost{background:transparent}
+  .btn.big{font-size:20px;padding:14px 34px}
+  .btn.danger{color:var(--red);border-color:#e8c3bf}
+  .btn:disabled{opacity:.45;cursor:not-allowed}
+  .row{display:flex;flex-wrap:wrap;gap:0}
+  .chips{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}
+  .chip{font-size:13px;background:#fff;border:1px solid var(--line);border-radius:999px;padding:2px 10px}
+  .chip.done{background:#e6f1ea;border-color:#bcd8c6;color:var(--green)}
+  .bar{height:10px;background:#efe6d4;border-radius:99px;overflow:hidden;margin:10px 0}
+  .bar>i{display:block;height:100%;background:linear-gradient(90deg,var(--green),var(--green-2));border-radius:99px;transition:width .4s}
+  .song{background:#fff;border:1px dashed var(--gold);border-radius:14px;padding:14px 16px;margin:10px 0}
+  .song .t{font-size:22px;font-weight:900;line-height:1.3}
+  .song .a{color:var(--muted)}
+  .song a{color:var(--green);font-weight:700}
+  .note{background:#fff4e8;border-left:4px solid var(--red);padding:10px 14px;border-radius:8px;margin:12px 0;font-size:14px}
+  .stage{text-align:center;padding:26px 16px}
+  .stage .who{font-size:30px;font-weight:900;color:var(--red);font-family:"Noto Serif TC",serif}
+  .stage .big{font-size:64px;font-weight:900;line-height:1.1}
+  .cd{font-size:96px;font-weight:900;line-height:1}
+  .cd.ready{color:var(--gold)} .cd.play{color:var(--green)} .cd.stop{color:var(--red)}
+  .cdl{font-size:22px;font-weight:900;letter-spacing:.1em}
+  .opts{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:8px;margin:12px 0}
+  .opt{border:2px solid var(--line);background:#fff;border-radius:12px;padding:12px;font:inherit;font-weight:700;cursor:pointer}
+  .opt.on{border-color:var(--green);background:#e6f1ea;color:var(--green)}
+  table{width:100%;border-collapse:collapse}
+  td{padding:8px 4px;border-bottom:1px solid var(--line)}
+  td.n{text-align:right;font-weight:900;font-variant-numeric:tabular-nums}
+  tr.top td{color:var(--red);font-weight:900}
+  details{margin-top:14px}
+  summary{cursor:pointer;font-weight:700}
+  .rules li{margin:4px 0}
+  .draw-anim{display:flex;justify-content:center;gap:10px;margin:18px 0}
+  .draw-anim span{width:58px;height:82px;border-radius:10px;background:var(--red);color:#fff;display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:900;animation:bob .5s ease-in-out infinite alternate}
+  .draw-anim span:nth-child(2){background:var(--green);animation-delay:.15s}
+  .draw-anim span:nth-child(3){background:var(--gold);animation-delay:.3s}
+  @keyframes bob{to{transform:translateY(-14px) rotate(6deg)}}
+  #modal .back{position:fixed;inset:0;background:rgba(20,25,20,.45);display:flex;align-items:center;justify-content:center;padding:20px;z-index:20}
+  #modal .box{background:var(--paper);border-radius:var(--radius);padding:22px;max-width:420px;width:100%}
+  #toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);background:var(--ink);color:#fff;padding:10px 18px;border-radius:12px;font-size:14px;z-index:30;max-width:90vw}
+  #toast:empty{display:none}
+  .lead{font-size:13px;font-weight:700;color:var(--red);letter-spacing:.12em}
+</style>
+</head>
+<body>
+<header>
+  <h1><small>CHRISTMAS SONG GIFT EXCHANGE</small>🎄 聖誕猜歌送禮</h1>
+  <div id="me"></div>
+</header>
+<main id="app"><div class="card center">載入中…</div></main>
+<div id="modal"></div>
+<div id="toast"></div>
+
+<script type="module">
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
+import { getFirestore, doc as fdoc, collection as fcol, setDoc, updateDoc, deleteDoc, onSnapshot, runTransaction } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
+import { FIREBASE_CONFIG, GAME_ID } from './firebase-config.js';
+
+const DEFAULT_N = 6;
+let FS = null;
+const BASE = 'games/' + GAME_ID + '/';
+const dref = p => fdoc(FS, BASE + p);
+const S = {
+  db:null, user:null, uid:null, ready:false, slow:false, fatal:null,
+  players:{}, songs:{}, votes:{}, config:null, assign:null, state:null,
+  loaded:new Set(), busy:false, editing:false, drawing:false, assigning:false,
+  modal:null, toast:'', readonly:false
+};
+
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const nm = id => S.players[id]?.name || '（已離開）';
+const norm = s => String(s||'').toLowerCase().replace(/[\s\p{P}\p{S}]/gu,'');
+const safeLink = u => /^https?:\/\//i.test(u||'') ? u : '';
+
+/* ---------- derived state ---------- */
+function D(){
+  const N = S.config?.expected || DEFAULT_N;
+  const pids = Object.keys(S.players).sort((a,b)=>(S.players[a].joinedAt||0)-(S.players[b].joinedAt||0));
+  const me = S.players[S.uid];
+  const isHost = !!me && S.config?.hostUid === S.uid;
+  const submitted = pids.filter(id => S.songs[id]);
+  const map = S.assign?.map || null;
+  const st = S.state || {};
+  const phase = st.phase==='done' ? 'done' : st.phase==='live' ? 'live' : map ? 'drawn' : 'collect';
+  const scores = {}; pids.forEach(id => scores[id]=0);
+  (st.log||[]).forEach(l => { scores[l.uid] = (scores[l.uid]||0) + l.pts; });
+  const presenter = st.presenter || null;
+  const giver = presenter && map ? map[presenter] : null;
+  return {N,pids,me,isHost,submitted,map,st,phase,scores,presenter,giver};
+}
+
+/* ---------- writes ---------- */
+function toast(msg){ S.toast = msg; renderToast(); clearTimeout(toast._t); toast._t = setTimeout(()=>{S.toast='';renderToast();}, 3800); }
+function handleErr(e){
+  console.error(e);
+  if (e?.code === 'permission-denied') toast('寫入被拒絕：請檢查 Firebase 安全規則是否已設定、是否過期。');
+  else if (e?.code === 'host-taken') toast('已經有主持人了');
+  else if (e?.code === 'resource-exhausted') toast('今日免費額度已用完，請明天再試。');
+  else toast('發生錯誤，請稍後再試：' + (e?.message || e));
+}
+async function run(fn){
+  if (S.busy) return;
+  S.busy = true; render();
+  try { await fn(); } catch(e){ handleErr(e); }
+  finally { S.busy = false; render(); }
+}
+const doc = p => ({
+  set: d => setDoc(dref(p), d),
+  update: d => updateDoc(dref(p), d),
+  delete: () => deleteDoc(dref(p)),
+});
+async function updState(patch){ await doc('game/state').update(patch); }
+
+function derange(ids){
+  let g;
+  do {
+    g = [...ids];
+    for (let i=g.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [g[i],g[j]]=[g[j],g[i]]; }
+  } while (g.some((x,i)=>x===ids[i]));
+  const m = {}; ids.forEach((r,i)=>m[r]=g[i]); return m;   // receiver -> giver
+}
+
+async function maybeAssign(){
+  const d = D();
+  if (d.phase!=='collect' || S.assigning || !d.me) return;
+  if (d.pids.length!==d.N || d.submitted.length!==d.N || d.N<2) return;
+  S.assigning = true;
+  try {
+    await runTransaction(FS, async tx => {
+      const r = dref('game/assign'); const s = await tx.get(r);
+      if (s.exists() && s.data()?.map) return;
+      tx.set(r, {map:derange(d.pids), at:Date.now()});
+    });
+  } catch(e){ handleErr(e); }
+  finally { S.assigning = false; }
+}
+
+async function claimHost(){
+  await runTransaction(FS, async tx => {
+    const r = dref('game/config'); const s = await tx.get(r);
+    const cd = s.exists() ? (s.data()||{}) : {};
+    if (cd.hostUid && cd.hostUid !== S.uid && S.players[cd.hostUid]) throw {code:'host-taken'};
+    tx.set(r, {...cd, hostUid:S.uid, expected:cd.expected||DEFAULT_N});
+  });
+}
+
+/* ---------- actions ---------- */
+const FORM = {
+  join: f => run(async()=>{
+    const d = D();
+    const name = f.querySelector('#j_name').value.trim();
+    const wantHost = f.querySelector('#j_host')?.checked;
+    if (!name) return toast('請輸入名字');
+    if (d.pids.some(id => S.players[id].name === name)) return toast('這個名字已經有人用了，換一個吧');
+    if (d.pids.length >= d.N) return toast('人數已滿');
+    if (d.phase !== 'collect') return toast('活動已經開始，無法加入');
+    await doc('players/'+S.uid).set({name, joinedAt:Date.now(), revealed:false});
+    if (wantHost) await claimHost();
+  }),
+  song: f => run(async()=>{
+    const title = f.querySelector('#s_title').value.trim();
+    const artist = f.querySelector('#s_artist').value.trim();
+    const link = f.querySelector('#s_link').value.trim();
+    if (!title || !artist || !link) return toast('歌名、歌手、連結都要填');
+    if (!safeLink(link)) return toast('連結要以 http:// 或 https:// 開頭');
+    const dup = Object.entries(S.songs).some(([id,s]) => id!==S.uid && S.players[id] &&
+      ((norm(s.title)===norm(title) && norm(s.artist)===norm(artist)) || s.link===link));
+    if (dup) return toast('這首歌已經有人出了，換一首吧！');
+    if (D().phase !== 'collect') return toast('歌曲已經分配，不能再修改');
+    await doc('songs/'+S.uid).set({title, artist, link, at:Date.now()});
+    S.editing = false;
+  }),
+  setN: f => run(async()=>{
+    const d = D(); const n = parseInt(f.querySelector('#h_n').value,10);
+    if (!(n>=3 && n<=30)) return toast('人數請填 3～30');
+    if (n < d.pids.length) return toast('人數不能少於已加入的人數');
+    await doc('game/config').update({expected:n});
+    toast('已更新人數為 '+n);
+  })
+};
+
+const ACT = {
+  claimHost: () => run(claimHost),
+  edit: () => { S.editing = true; render(); },
+  cancelEdit: () => { S.editing = false; render(); },
+  draw: () => {
+    S.drawing = true; render();
+    setTimeout(()=> run(async()=>{ await doc('players/'+S.uid).update({revealed:true}); S.drawing=false; }), 1800);
+  },
+  start: () => confirmBox('開始活動後就不能再重新分配歌曲。確定開始？', () => run(async()=>{
+    await doc('game/state').set({phase:'live', step:'pick', presenter:null, roundNo:0, done:[], log:[], startAt:0});
+  })),
+  pick: id => run(async()=>{ const st=D().st; await updState({presenter:id, step:'gifts', roundNo:(st.roundNo||0)+1, startAt:0}); }),
+  play: () => run(()=>updState({step:'play', startAt:Date.now()+3000})),
+  toAnswer: () => run(()=>updState({step:'answer'})),
+  award: id => run(async()=>{
+    const st = D().st; const log = [...(st.log||[])];
+    if (id) log.push({kind:'title', uid:id, pts:1, round:st.roundNo});
+    await updState({log, step:'song', titleWinner:id||null});
+  }),
+  toVote: () => run(()=>updState({step:'vote'})),
+  vote: id => run(async()=>{ const d=D(); await doc('votes/'+S.uid).set({roundNo:d.st.roundNo, presenter:d.presenter, pick:id, at:Date.now()}); }),
+  revealGiver: () => {
+    const d = D();
+    const cnt = Object.values(S.votes).filter(v=>v.roundNo===d.st.roundNo).length;
+    const go = () => run(async()=>{
+      const d2 = D(); const log = [...(d2.st.log||[])]; const winners = [];
+      Object.entries(S.votes).forEach(([voter,v])=>{
+        if (v.roundNo===d2.st.roundNo && v.pick===d2.giver && voter!==d2.giver){ log.push({kind:'giver', uid:voter, pts:2, round:d2.st.roundNo}); winners.push(voter); }
+      });
+      await updState({log, step:'giver', giverWinners:winners});
+    });
+    if (cnt < d.pids.length-1) confirmBox(`還有人沒投票（${cnt}/${d.pids.length-1}）。確定要揭曉嗎？`, go); else go();
+  },
+  finish: () => run(async()=>{
+    const d = D(); const done = [...new Set([...(d.st.done||[]), d.presenter])];
+    const patch = {done, presenter:null, step:'pick', titleWinner:null, giverWinners:[]};
+    if (done.length >= d.pids.length) patch.phase = 'done';
+    await updState(patch);
+  }),
+  undo: () => { const st=D().st; const last=(st.log||[]).slice(-1)[0]; if(!last) return;
+    confirmBox(`撤銷「${nm(last.uid)} +${last.pts}」？`, ()=>run(()=>updState({log:st.log.slice(0,-1)}))); },
+  remove: id => confirmBox(`移除玩家「${nm(id)}」？他出的歌也會一起刪除。`, ()=>run(async()=>{
+    await doc('songs/'+id).delete(); await doc('players/'+id).delete();
+  })),
+  reassign: () => confirmBox('重新分配後，每個人抽到的歌都會改變，大家要重新抽歌。確定？', ()=>run(async()=>{
+    const d = D(); await doc('game/assign').set({map:derange(d.pids), at:Date.now()});
+    for (const id of d.pids) await doc('players/'+id).update({revealed:false});
+  })),
+  resetSoft: () => confirmBox('清除所有歌曲、分配與分數，保留玩家名單和主持人。確定？', ()=>run(async()=>{
+    await wipe(false);
+  })),
+  resetAll: () => confirmBox('全部清空：玩家、主持人、歌曲、分數都會刪除。確定？', ()=>run(async()=>{
+    await wipe(true);
+  })),
+  addBots: () => run(async()=>{
+    const d = D(); const need = d.N - d.pids.length;
+    if (need <= 0) return toast('人數已滿，不需要測試玩家');
+    const used = new Set(Object.values(S.songs).map(s=>norm(s.title)));
+    const pool = BOT_SONGS.filter(s=>!used.has(norm(s[0])));
+    for (let i=0;i<need;i++){
+      const id = 'bot-' + Math.random().toString(36).slice(2,8);
+      const [title, artist] = pool[i % pool.length];
+      await doc('players/'+id).set({name:'測試玩家'+(d.pids.length+i+1), joinedAt:Date.now()+i, revealed:true, bot:true});
+      await doc('songs/'+id).set({title, artist, link:'https://www.youtube.com/results?search_query='+encodeURIComponent(title+' '+artist), at:Date.now()});
+    }
+  }),
+  botVote: () => run(async()=>{
+    const d = D();
+    for (const id of d.pids.filter(x=>S.players[x].bot && x!==d.giver)){
+      const c = d.pids.filter(x=>x!==id && x!==d.presenter);
+      await doc('votes/'+id).set({roundNo:d.st.roundNo, presenter:d.presenter, pick:c[Math.floor(Math.random()*c.length)], at:Date.now()});
+    }
+  }),
+  modalOk: () => { const f=S.modal?.ok; S.modal=null; renderModal(); f&&f(); },
+  modalCancel: () => { S.modal=null; renderModal(); },
+};
+
+async function wipe(all){
+  const d = D();
+  await doc('game/state').delete();
+  await doc('game/assign').delete();
+  for (const id of Object.keys(S.votes)) await doc('votes/'+id).delete();
+  for (const id of Object.keys(S.songs)) await doc('songs/'+id).delete();
+  if (all){
+    for (const id of d.pids) await doc('players/'+id).delete();
+    await doc('game/config').delete();
+  } else {
+    for (const id of d.pids) await doc('players/'+id).update({revealed:false});
+  }
+}
+const BOT_SONGS = [
+  ['Last Christmas','Wham!'], ['All I Want for Christmas Is You','Mariah Carey'], ['Jingle Bell Rock','Bobby Helms'],
+  ['小幸運','田馥甄'], ['晴天','周杰倫'], ['倔強','五月天'], ['Shape of You','Ed Sheeran'], ['好想你','四葉草'],
+];
+function confirmBox(text, ok){ S.modal = {text, ok}; renderModal(); }
+
+document.addEventListener('click', e => {
+  const b = e.target.closest('[data-act]'); if (!b || b.disabled) return;
+  ACT[b.dataset.act]?.(b.dataset.arg);
+});
+document.addEventListener('submit', e => { e.preventDefault(); FORM[e.target.dataset.form]?.(e.target); });
+
+/* ---------- view pieces ---------- */
+const dis = () => (S.busy || S.readonly) ? 'disabled' : '';
+function songCard(s){
+  if (!s) return '<div class="song muted">找不到歌曲資料，請主持人重新分配。</div>';
+  const l = safeLink(s.link);
+  return `<div class="song"><div class="t">${esc(s.title)}</div><div class="a">${esc(s.artist)}</div>
+    ${l ? `<a href="${esc(l)}" target="_blank" rel="noopener noreferrer">開啟歌曲連結 ↗</a>` : ''}</div>`;
+}
+function board(d, final){
+  const rows = [...d.pids].sort((a,b)=>d.scores[b]-d.scores[a]);
+  const top = rows.length ? d.scores[rows[0]] : 0;
+  return `<table>${rows.map((id,i)=>`<tr class="${final && d.scores[id]===top && top>0 ? 'top':''}">
+    <td>${final && d.scores[id]===top && top>0 ? '🏆 ':''}${esc(nm(id))}${id===S.uid?' <span class="muted small">（你）</span>':''}</td>
+    <td class="n">${d.scores[id]} 分</td></tr>`).join('')}</table>`;
+}
+function countdown(startAt){
+  const t = Date.now();
+  if (t < startAt) return {l:'準備', n:Math.ceil((startAt-t)/1000), c:'ready'};
+  if (t < startAt+3000) return {l:'播放！', n:Math.ceil((startAt+3000-t)/1000), c:'play'};
+  return {l:'停！', n:'⏹', c:'stop'};
+}
+
+function joinView(d){
+  if (d.phase !== 'collect') return `<section class="card center"><h2>活動已經開始</h2><p class="muted">目前無法加入。</p></section>`;
+  if (d.pids.length >= d.N) return `<section class="card center"><h2>人數已滿</h2><p class="muted">${d.N} 位玩家都到齊了。</p></section>`;
+  return `<section class="card"><h2>加入遊戲</h2>
+    <p class="muted">先填你的名字，其他玩家會看到這個名字。</p>
+    <form data-form="join">
+      <label>你的名字<input id="j_name" maxlength="12" placeholder="例如：小明" autocomplete="off"></label>
+      ${!S.config?.hostUid || !S.players[S.config.hostUid] ? `<label class="check"><input type="checkbox" id="j_host"> 我是主持人</label>` : ''}
+      <button class="btn primary" ${dis()}>加入</button>
+    </form>
+    <p class="muted small">已加入 ${d.pids.length}/${d.N} 人</p></section>`;
+}
+
+function collectView(d){
+  const mine = S.songs[S.uid];
+  if (!mine || S.editing){
+    return `<section class="card"><div class="lead">STEP 1</div><h2>出一首歌</h2>
+      <p class="muted">只有你看得到自己出了哪首歌。其他玩家和主持人都不會知道是誰出的。</p>
+      <form data-form="song">
+        <label>歌名<input id="s_title" maxlength="80" value="${esc(mine?.title)}" autocomplete="off"></label>
+        <label>歌手<input id="s_artist" maxlength="60" value="${esc(mine?.artist)}" autocomplete="off"></label>
+        <label>歌曲連結<input id="s_link" type="url" maxlength="300" placeholder="https://www.youtube.com/watch?v=…" value="${esc(mine?.link)}"></label>
+        <button class="btn primary" ${dis()}>${mine ? '儲存修改' : '送出'}</button>
+        ${S.editing ? `<button type="button" class="btn ghost" data-act="cancelEdit">取消</button>` : ''}
+      </form></section>`;
+  }
+  const waitJoin = d.N - d.pids.length;
+  const missing = d.pids.filter(id => !S.songs[id]);
+  const all = d.submitted.length === d.N && !waitJoin;
+  return `<section class="card"><h2>${all ? '🎲 分配歌曲中…' : '⏳ 等待其他玩家填寫'}</h2>
+      <div class="bar"><i style="width:${Math.round(d.submitted.length/d.N*100)}%"></i></div>
+      <p>已出歌 <b>${d.submitted.length}/${d.N}</b> 人${waitJoin>0 ? `，還有 <b>${waitJoin}</b> 人尚未加入` : ''}</p>
+      ${missing.length ? `<p class="small muted">尚未出歌：</p><div class="chips">${missing.map(id=>`<span class="chip">${esc(nm(id))}</span>`).join('')}</div>` : ''}
+      <p class="muted small">所有人填完後，系統會一次分配好歌曲，保證不會抽到自己出的歌。</p>
+    </section>
+    <section class="card"><h3>你出的歌</h3>${songCard(mine)}
+      <button class="btn" data-act="edit" ${dis()}>修改</button></section>`;
+}
+
+function giftNote(){
+  return `<div class="note">
+    根據這首歌準備<b>兩份禮物</b>：🤪 一份搞笑、🎁 一份認真。兩份都要跟歌有關（歌名、歌詞、MV、歌手、意境、諧音都可以）。<br>
+    包裝上標明「搞笑」或「認真」，不要寫歌名。抽到哪首歌請保密！<br>
+    🚫 不能送：馬克杯、保溫瓶、相框；明信片只能當賀卡，不能當禮物本體。</div>`;
+}
+
+function drawnView(d){
+  if (S.drawing) return `<section class="card center"><h2>抽歌中…</h2><div class="draw-anim"><span>?</span><span>?</span><span>?</span></div></section>`;
+  if (!d.me.revealed) return `<section class="card center"><h2>🎄 歌曲分配完成！</h2>
+      <p>按下按鈕抽出你的歌。抽到的歌只有你自己看得到。</p>
+      <button class="btn red big" data-act="draw" ${dis()}>抽歌</button></section>`;
+  return `<section class="card"><div class="lead">YOUR SONG</div><h2>你抽到的歌</h2>
+      ${songCard(S.songs[d.map[S.uid]])}${giftNote()}
+      <p class="muted small">活動當天，等主持人開始。</p></section>`;
+}
+
+function liveView(d){
+  const st = d.st, p = d.presenter;
+  const isP = p === S.uid, isG = d.giver === S.uid;
+  const round = (st.done||[]).length + (p ? 1 : 0);
+  let h = `<section class="card"><div class="lead">ROUND ${Math.max(round,1)} / ${d.pids.length}</div>`;
+  if (st.step === 'pick' || !p){
+    h += `<div class="stage"><div class="big">🎅</div><p>等待主持人選擇下一位上台的人…</p></div>`;
+  } else if (st.step === 'gifts'){
+    h += `<div class="stage"><p>本輪上台</p><div class="who">${esc(nm(p))}</div><p>🎁 亮出兩份禮物</p></div>`;
+    if (isP) h += `<div class="note">輪到你了！先亮出兩份禮物，<b>不要說歌名</b>。等一下要播前 3 秒，現在先把歌打開準備好。</div>${songCard(S.songs[d.map[S.uid]])}`;
+  } else if (st.step === 'play'){
+    const c = countdown(st.startAt||0);
+    h += `<div class="stage"><div class="cdl">${c.l}</div><div class="cd ${c.c}">${c.n}</div>
+      <p class="muted">${isP ? '看到「播放！」就按下播放，看到「停！」立刻暫停。' : '仔細聽前 3 秒！'}</p></div>`;
+    if (isP) h += songCard(S.songs[d.map[S.uid]]);
+  } else if (st.step === 'answer'){
+    h += `<div class="stage"><div class="big">🔔</div><div class="who">搶答時間！</div>
+      <p>${isP || isG ? '你知道答案，這題不能搶答 🤐' : '直接大聲喊出歌名！第一個答對 +1 分'}</p></div>`;
+  } else if (st.step === 'song'){
+    h += `<p class="muted">答案是</p>${songCard(S.songs[d.giver])}
+      <p>${st.titleWinner ? `🎯 <b>${esc(nm(st.titleWinner))}</b> 答對了，+1 分` : '這題沒人答對'}</p>`;
+    if (isP) h += `<div class="note">請說明你的兩份禮物跟這首歌有什麼關聯。</div>`;
+  } else if (st.step === 'vote'){
+    h += `<h2>🕵️ 這首歌是誰出的？</h2><p class="muted">「${esc(S.songs[d.giver]?.title)}」｜猜對 +2 分</p>`;
+    if (isG){
+      h += `<div class="stage"><div class="big">😐</div><p>你是出歌人，這題不投票。<br>保持撲克臉！</p></div>`;
+    } else {
+      const myV = S.votes[S.uid]; const picked = myV && myV.roundNo===st.roundNo ? myV.pick : null;
+      const cands = d.pids.filter(id => id!==S.uid && id!==p);
+      h += `<div class="opts">${cands.map(id=>`<button class="opt ${picked===id?'on':''}" data-act="vote" data-arg="${esc(id)}" ${dis()}>${esc(nm(id))}</button>`).join('')}</div>
+        <p class="small muted">${picked ? `你選了 <b>${esc(nm(picked))}</b>，揭曉前都可以改。` : '點一個名字投票。'}</p>`;
+    }
+  } else if (st.step === 'giver'){
+    const w = st.giverWinners || [];
+    h += `<div class="stage"><p>出歌人是</p><div class="who">${esc(nm(d.giver))}</div>
+      <p>${w.length ? `🎉 猜對的人各 +2 分：<b>${w.map(id=>esc(nm(id))).join('、')}</b>` : '沒有人猜中！'}</p>
+      <p>請 <b>${esc(nm(d.giver))}</b> 上台領取兩份禮物 🎁🎁</p></div>`;
+  }
+  h += `</section>`;
+  h += `<section class="card"><h3>🏅 目前分數</h3>${board(d,false)}</section>`;
+  h += `<section class="card"><details><summary>查看我抽到的歌</summary>${songCard(S.songs[d.map[S.uid]])}</details></section>`;
+  return h;
+}
+
+function doneView(d){
+  const top = Math.max(0, ...d.pids.map(id=>d.scores[id]));
+  const champs = d.pids.filter(id=>d.scores[id]===top && top>0);
+  return `<section class="card center"><div class="big" style="font-size:56px">🎉</div><h2>活動結束！</h2>
+      ${champs.length ? `<p>最高分：<b>${champs.map(id=>esc(nm(id))).join('、')}</b>（${top} 分）</p>` : ''}
+      ${champs.length > 1 ? '<p class="muted">同分請猜拳決定誰拿獎品！</p>' : ''}
+    </section><section class="card"><h3>🏆 最終排名</h3>${board(d,true)}</section>`;
+}
+
+function hostView(d){
+  const st = d.st, p = d.presenter;
+  let h = `<section class="card host"><h2>🎛️ 主持人控制台</h2>`;
+  if (d.phase === 'collect'){
+    h += `<p>已加入 <b>${d.pids.length}/${d.N}</b>，已出歌 <b>${d.submitted.length}/${d.N}</b>。全部出完後系統會自動分配。</p>`;
+  } else if (d.phase === 'drawn'){
+    const rv = d.pids.filter(id=>S.players[id].revealed).length;
+    h += `<p>已抽歌 <b>${rv}/${d.pids.length}</b></p>
+      <div class="chips">${d.pids.map(id=>`<span class="chip ${S.players[id].revealed?'done':''}">${esc(nm(id))}</span>`).join('')}</div>
+      <p class="small muted">活動當天大家到齊後，按下開始。</p>
+      <button class="btn primary" data-act="start" ${dis()}>🎬 開始活動</button>`;
+  } else if (d.phase === 'live'){
+    if (st.step === 'pick' || !p){
+      const left = d.pids.filter(id => !(st.done||[]).includes(id));
+      h += `<p>選擇下一位上台的人：</p><div class="row">${left.map(id=>`<button class="btn" data-act="pick" data-arg="${esc(id)}" ${dis()}>${esc(nm(id))}</button>`).join('')}</div>`;
+    } else if (st.step === 'gifts'){
+      h += `<p>請 <b>${esc(nm(p))}</b> 亮出兩份禮物。</p><button class="btn primary" data-act="play" ${dis()}>▶ 開始倒數，播放前 3 秒</button>`;
+    } else if (st.step === 'play'){
+      h += `<p>倒數結束後，按下一步開始搶答。</p>
+        <button class="btn" data-act="play" ${dis()}>🔁 重新倒數</button>
+        <button class="btn primary" data-act="toAnswer" ${dis()}>下一步：搶答</button>`;
+    } else if (st.step === 'answer'){
+      const c = d.pids.filter(id => id!==p);
+      h += `<p>誰第一個答對歌名？（+1 分）</p><div class="row">${c.map(id=>`<button class="btn" data-act="award" data-arg="${esc(id)}" ${dis()}>${esc(nm(id))}</button>`).join('')}</div>
+        <button class="btn ghost" data-act="award" data-arg="" ${dis()}>沒人答對，公布歌名</button>`;
+    } else if (st.step === 'song'){
+      h += `<p>歌名已公布，請 <b>${esc(nm(p))}</b> 說明禮物跟歌的關聯。</p><button class="btn primary" data-act="toVote" ${dis()}>下一步：猜出歌人</button>`;
+    } else if (st.step === 'vote'){
+      const cnt = Object.values(S.votes).filter(v=>v.roundNo===st.roundNo).length;
+      h += `<p>已投票 <b>${cnt}/${d.pids.length-1}</b></p><button class="btn red" data-act="revealGiver" ${dis()}>揭曉出歌人</button>`;
+      if (d.pids.some(id=>S.players[id].bot)) h += `<button class="btn" data-act="botVote" ${dis()}>🤖 讓測試玩家隨機投票</button>`;
+    } else if (st.step === 'giver'){
+      const last = (st.done||[]).length + 1 >= d.pids.length;
+      h += `<button class="btn primary" data-act="finish" ${dis()}>${last ? '完成最後一輪，公布排名' : '完成本輪，下一位'}</button>`;
+    }
+    const lastLog = (st.log||[]).slice(-1)[0];
+    if (lastLog) h += `<p class="small"><button class="btn ghost danger" data-act="undo" ${dis()}>↶ 撤銷上一筆加分（${esc(nm(lastLog.uid))} +${lastLog.pts}）</button></p>`;
+  } else {
+    h += `<p>活動已結束。</p>`;
+  }
+  h += `<details><summary>⚙️ 進階設定</summary>`;
+  if (d.phase === 'collect'){
+    h += `<form data-form="setN"><label>參加人數<input id="h_n" type="number" min="3" max="30" value="${d.N}"></label>
+      <button class="btn" ${dis()}>更新人數</button></form>
+      <p class="small muted" style="margin-top:14px">玩家名單（有人退出時可移除）：</p>
+      <div>${d.pids.map(id=>`<div class="row" style="align-items:center;justify-content:space-between;border-bottom:1px solid var(--line);padding:4px 0">
+        <span>${esc(nm(id))}${S.songs[id]?' ✅':''}</span>
+        ${id!==S.uid ? `<button class="btn ghost danger" style="margin:0" data-act="remove" data-arg="${esc(id)}" ${dis()}>移除</button>`:'<span class="muted small">主持人</span>'}</div>`).join('')}</div>`;
+  }
+  if (d.phase === 'drawn') h += `<p><button class="btn" data-act="reassign" ${dis()}>🔀 重新分配歌曲</button></p>`;
+  const here = location.href.split('?')[0].split('#')[0];
+  h += `<div class="note" style="background:#eef4ff;border-color:#4a6fb3"><b>🧪 測試工具</b><br>
+    用其他玩家身分開啟（每個連結是一位不同的玩家，可同時開多個分頁）：<br>
+    ${[2,3,4,5,6].map(n=>`<a href="${esc(here)}?u=${n}" target="_blank" rel="noopener">玩家 ${n}</a>`).join('　')}
+    ${d.phase==='collect' ? `<br><button class="btn" data-act="addBots" ${dis()}>🤖 用測試玩家補滿人數（自動出歌）</button>` : ''}</div>`;
+  h += `<p><button class="btn danger" data-act="resetSoft" ${dis()}>清除歌曲與分數（保留玩家）</button>
+      <button class="btn danger" data-act="resetAll" ${dis()}>全部清空</button></p></details></section>`;
+  return h;
+}
+
+function rulesView(){
+  return `<section class="card"><details><summary>📜 活動規則</summary><ol class="rules">
+    <li><b>出歌：</b>每人匿名出一首歌（歌名＋歌手＋連結）。</li>
+    <li><b>抽歌：</b>所有人出完後，系統一次分配，不會抽到自己的歌。抽到哪首歌請保密。</li>
+    <li><b>準備禮物：</b>根據抽到的歌準備兩份禮物，🤪 一份搞笑、🎁 一份認真，價格不限。包裝標明「搞笑」或「認真」，不寫歌名。</li>
+    <li><b>禁止送：</b>馬克杯、保溫瓶、相框；明信片只能當賀卡，不能當禮物本體。</li>
+    <li><b>活動當天每輪：</b>上台的人亮出兩份禮物 → 只播前 3 秒，全場搶答歌名，第一個答對 <b>+1 分</b> → 公布歌名、說明關聯 → 全場投票猜出歌人，猜對各 <b>+2 分</b> → 出歌人上台領走兩份禮物。</li>
+    <li><b>搶答限制：</b>猜歌名時，出歌人和上台的人不能答；猜出歌人時，出歌人不能投票。</li>
+    <li><b>頒獎：</b>總分最高的人得到小獎品，同分猜拳。</li>
+  </ol></details></section>`;
+}
+
+function view(){
+  if (S.fatal) return `<section class="card center"><h2>無法載入</h2><p class="muted">${esc(S.fatal)}</p></section>`;
+  if (!S.ready) return `<section class="card center">${S.slow ? '資料暫時連不上，請稍後重新整理頁面。' : '載入中…'}</section>`;
+  const d = D(); let h = '';
+  if (!d.me){ h += joinView(d); }
+  else {
+    if (!S.config?.hostUid || !S.players[S.config.hostUid])
+      h += `<div class="note">目前還沒有主持人。<button class="btn" style="margin:0 0 0 8px" data-act="claimHost" ${dis()}>我來當主持人</button></div>`;
+    if (d.isHost) h += hostView(d);
+    h += d.phase==='collect' ? collectView(d) : d.phase==='drawn' ? drawnView(d) : d.phase==='live' ? liveView(d) : doneView(d);
+  }
+  return h + rulesView();
+}
+
+/* ---------- render ---------- */
+function render(){
+  const app = document.getElementById('app');
+  const saved = {};
+  app.querySelectorAll('input').forEach(el => { if (el.id) saved[el.id] = {v:el.value, c:el.checked}; });
+  const a = document.activeElement; const fid = a && app.contains(a) ? a.id : null;
+  let ss=null, se=null; try { ss=a.selectionStart; se=a.selectionEnd; } catch(_){}
+  app.innerHTML = view();
+  for (const id in saved){ const el = document.getElementById(id); if (!el) continue;
+    if (el.type==='checkbox') el.checked = saved[id].c; else el.value = saved[id].v; }
+  if (fid){ const el = document.getElementById(fid); if (el){ el.focus(); try{ if (ss!=null) el.setSelectionRange(ss,se); }catch(_){} } }
+  const d = S.ready ? D() : null;
+  document.getElementById('me').innerHTML = d?.me ? `<span class="me">👤 ${esc(d.me.name)}${d.isHost?'<span class="tag">主持人</span>':''}</span>` : '';
+  renderModal(); renderToast();
+}
+function renderModal(){
+  const m = document.getElementById('modal');
+  m.innerHTML = S.modal ? `<div class="back"><div class="box"><p>${esc(S.modal.text)}</p>
+    <button class="btn red" data-act="modalOk">確定</button><button class="btn ghost" data-act="modalCancel">取消</button></div></div>` : '';
+}
+function renderToast(){ document.getElementById('toast').textContent = S.toast; }
+setInterval(()=>{ if (S.state?.step === 'play' && S.state?.phase==='live') render(); }, 200);
+
+/* ---------- boot ---------- */
+function getUid(){
+  const slot = new URLSearchParams(location.search).get('u') || 'main';
+  const key = 'xmas_uid_' + GAME_ID + '_' + slot;
+  const mk = () => (crypto.randomUUID ? crypto.randomUUID() : Date.now().toString(36)+Math.random().toString(36).slice(2)).replace(/-/g,'');
+  try { let v = localStorage.getItem(key); if (!v){ v = mk(); localStorage.setItem(key, v); } return v; }
+  catch(_){ return mk(); }
+}
+function boot(){
+  if (!FIREBASE_CONFIG?.apiKey || FIREBASE_CONFIG.apiKey.startsWith('YOUR')){
+    S.fatal = '尚未設定 Firebase。請依照 README 的步驟，把設定貼進 firebase-config.js。'; return render();
+  }
+  const slowT = setTimeout(()=>{ if(!S.ready){ S.slow=true; render(); } }, 10000);
+  FS = getFirestore(initializeApp(FIREBASE_CONFIG));
+  S.uid = getUid();
+  const mark = k => { S.loaded.add(k); if (S.loaded.size >= 6 && !S.ready){ S.ready = true; clearTimeout(slowT); } render(); maybeAssign(); };
+  const onErr = e => { console.error(e); clearTimeout(slowT);
+    S.fatal = e?.code==='permission-denied' ? '讀取被拒絕：請檢查 Firebase 安全規則是否已設定、是否過期。' : '資料庫連線錯誤：' + (e?.message||e); render(); };
+  const coll = (path, key) => onSnapshot(fcol(FS, BASE + path), s => {
+    const o = {}; s.docs.forEach(x => { o[x.id] = x.data(); }); S[key] = o; mark(key);
+  }, onErr);
+  const one = (path, key) => onSnapshot(dref(path), s => { S[key] = s.exists() ? s.data() : null; mark(key); }, onErr);
+  coll('players','players'); coll('songs','songs'); coll('votes','votes');
+  one('game/config','config'); one('game/assign','assign'); one('game/state','state');
+}
+boot();
+</script>
+</body>
+</html>
